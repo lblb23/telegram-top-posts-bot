@@ -3,6 +3,7 @@ from instaloader import Profile
 import pandas as pd
 import re
 from tabulate import tabulate
+from telegram.ext import CallbackContext
 
 L = instaloader.Instaloader(
     sleep=True,
@@ -14,13 +15,36 @@ L = instaloader.Instaloader(
 )
 
 
-def thousands_sep(x):
+def thousands_sep(x: str) -> str:
+    """
+    Return number with thousand separators
+    :param x: number
+    :return: number with thousand separators
+    """
     return "{:,}".format(x).replace(",", " ")
 
 
 def get_top_posts(
-    context, chat_id, messages, profile_url, top_n=10, lookback_posts=100
-):
+    context: CallbackContext,
+    chat_id: int,
+    messages: dict,
+    profile_url: str,
+    top_n=10,
+    lookback_posts=100,
+) -> tuple:
+    """
+    1. Get from message instagram username
+    2. Get last 100 posts
+    3. Get top 10 videos by views and top 10 photos by likes
+    4. Send to user
+    :param context: callback context
+    :param chat_id: chat id with user
+    :param messages: dict with templates of messages
+    :param profile_url: messsage from user
+    :param top_n:
+    :param lookback_posts:
+    :return: success status and reason if failed
+    """
     context.bot.send_message(chat_id=chat_id, text=messages["loading"])
     try:
         username = re.findall(
@@ -78,6 +102,8 @@ def get_top_posts(
         context.bot.send_message(
             chat_id=chat_id, text=top_photos, disable_web_page_preview=True
         )
+        result = True
+        traceback = "Success"
 
     except IndexError as e:
         context.bot.send_message(chat_id=chat_id, text=messages["error"])
