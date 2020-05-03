@@ -94,7 +94,9 @@ def handle_message(update, context):
         )
 
         # Send data to chatbase
-        msg = Message(api_key=config["chatbase_token"], user_id=username, message=profile_url)
+        msg = Message(
+            api_key=config["chatbase_token"], user_id=username, message=profile_url
+        )
         msg.send()
 
         # Add user and their chat id to database if not exists
