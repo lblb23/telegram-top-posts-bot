@@ -73,35 +73,40 @@ def get_top_posts(
                 )
             n = n + 1
 
-        df_videos = (
-            pd.DataFrame(posts_videos)
-            .sort_values("Views", ascending=False)
-            .head(n=top_n)
-            .set_index("Post URL")
-        )
-        df_videos["Views"] = df_videos["Views"].apply(
-            lambda x: f"{thousands_sep(x)} views"
-        )
+        if len(posts_photos) > 0:
+            df_photos = (
+                pd.DataFrame(posts_photos)
+                .sort_values("Likes", ascending=False)
+                .head(n=top_n)
+                .set_index("Post URL")
+            )
+            df_photos["Likes"] = df_photos["Likes"].apply(
+                lambda x: f"{thousands_sep(x)} likes"
+            )
 
-        df_photos = (
-            pd.DataFrame(posts_photos)
-            .sort_values("Likes", ascending=False)
-            .head(n=top_n)
-            .set_index("Post URL")
-        )
-        df_photos["Likes"] = df_photos["Likes"].apply(
-            lambda x: f"{thousands_sep(x)} likes"
-        )
+            top_photos = "Top posts by likes:\n" + tabulate(df_photos, tablefmt="plain")
 
-        top_videos = "Top videos by views:\n" + tabulate(df_videos, tablefmt="plain")
-        top_photos = "Top posts by likes:\n" + tabulate(df_photos, tablefmt="plain")
+            context.bot.send_message(
+                chat_id=chat_id, text=top_photos, disable_web_page_preview=True
+            )
 
-        context.bot.send_message(
-            chat_id=chat_id, text=top_videos, disable_web_page_preview=True
-        )
-        context.bot.send_message(
-            chat_id=chat_id, text=top_photos, disable_web_page_preview=True
-        )
+        if len(posts_videos) > 0:
+            df_videos = (
+                pd.DataFrame(posts_videos)
+                .sort_values("Views", ascending=False)
+                .head(n=top_n)
+                .set_index("Post URL")
+            )
+            df_videos["Views"] = df_videos["Views"].apply(
+                lambda x: f"{thousands_sep(x)} views"
+            )
+
+            top_videos = "Top videos by views:\n" + tabulate(df_videos,
+                                                             tablefmt="plain")
+            context.bot.send_message(
+                chat_id=chat_id, text=top_videos, disable_web_page_preview=True
+            )
+
         result = True
         traceback = "Success"
 
