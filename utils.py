@@ -48,7 +48,7 @@ def get_top_posts(
     context.bot.send_message(chat_id=chat_id, text=messages["loading"])
     try:
         username = re.findall(
-            r"(?:(?:http|https):\/\/)?(?:www.)?(?:instagram.com|instagr.am)\/([A-Za-z0-9-_]+)",
+            r"(?:(?:http|https):\/\/)?(?:www.)?(?:instagram.com|instagr.am)\/([A-Za-z0-9-_.]+)",
             profile_url,
         )[0]
         profile = Profile.from_username(L.context, username)
