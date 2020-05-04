@@ -110,7 +110,7 @@ def get_top_posts(
         result = True
         traceback = "Success"
 
-    except IndexError as e:
+    except Exception as e:
         context.bot.send_message(chat_id=chat_id, text=messages["error"])
         result = False
         traceback = str(e)
