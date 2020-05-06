@@ -73,6 +73,9 @@ def get_top_posts(
                 )
             n = n + 1
 
+        if len(posts_photos) == 0 and len(posts_videos) == 0:
+            raise ValueError("Profile is closed.")
+
         if len(posts_photos) > 0:
             df_photos = (
                 pd.DataFrame(posts_photos)
@@ -101,8 +104,9 @@ def get_top_posts(
                 lambda x: f"{thousands_sep(x)} views"
             )
 
-            top_videos = "Top videos by views:\n" + tabulate(df_videos,
-                                                             tablefmt="plain")
+            top_videos = "Top videos by views:\n" + tabulate(
+                df_videos, tablefmt="plain"
+            )
             context.bot.send_message(
                 chat_id=chat_id, text=top_videos, disable_web_page_preview=True
             )
