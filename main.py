@@ -87,6 +87,7 @@ def handle_message(update, context):
         print(
             username,
             time.ctime(int(time.time())),
+            profile_url,
             result,
             traceback,
             sep="    ",
