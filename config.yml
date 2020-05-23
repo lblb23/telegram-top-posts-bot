@@ -1,13 +1,15 @@
 telegram_token: <value> # Telegram token id
 chatbase_token: <value> # Chatbase token for store statistic
 pause_mailing: 10 # Delay between messages in mailing
+messages_limit: 10 # Limit of messages for each user in 24 hours
 
 # Messages for events
 messages:
   start: "Hello! I can give to you top N posts by likes from Instagram account"
   help: "Just send me a link to profile"
-  loading: "Your data is loading ..."
+  loading: "Your data is loading ... You have {}/{} messages left"
   error: "Invalid URL, username must be in link and profile must be public"
+  limit_message: "Unfortunately, your limit is exceeded."
 
 top_n: 10 # how many top posts to display
 lookback_posts: 100 # Get top posts from last N posts

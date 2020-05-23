@@ -13,7 +13,7 @@ from telegram.ext import (
 )
 from tinydb import TinyDB, Query
 
-from utils import get_top_posts
+from utils import get_top_posts, send_limit_message
 
 # Mac OS SSL problem
 # import ssl
@@ -23,9 +23,24 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     "--config_path", default="config.yml", dest="config_path", help="Path to config"
 )
+parser.add_argument(
+    "--db_users",
+    default="db_users.json",
+    dest="db_users_path",
+    help="Path to database of users",
+)
+parser.add_argument(
+    "--db_users_limits",
+    default="db_users_limits.json",
+    dest="db_users_limits_path",
+    help="Path to database of limits",
+)
 
 args = parser.parse_args()
 config_path = args.config_path
+db_users_path = args.db_users_path
+db_users_limits_path = args.db_users_limits_path
+
 
 with open(config_path) as file:
     config = yaml.load(file, Loader=yaml.FullLoader)
@@ -40,8 +55,10 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 query = Query()
-db_users = TinyDB("db_users.json")
+db_users = TinyDB(db_users_path)
+db_limits = TinyDB(db_users_limits_path)
 messages = config["messages"]
+messages_limit = config["messages_limit"]
 
 
 def main():
@@ -74,14 +91,23 @@ def handle_message(update, context):
         chat_id = update.message.chat.id
         profile_url = update.message.text
 
-        result, traceback = get_top_posts(
-            context,
-            chat_id,
-            messages,
-            profile_url,
-            top_n=config["top_n"],
-            lookback_posts=config["lookback_posts"],
-        )
+        count_messages = len(db_limits.search(query.user == username))
+
+        if count_messages <= messages_limit:
+            context.bot.send_message(
+                chat_id=chat_id,
+                text=messages["loading"].format(count_messages, messages_limit),
+            )
+            result, traceback = get_top_posts(
+                context,
+                chat_id,
+                messages,
+                profile_url,
+                top_n=config["top_n"],
+                lookback_posts=config["lookback_posts"],
+            )
+        else:
+            result, traceback = send_limit_message(context, chat_id, messages)
 
         # Print to pythonanywhere log
         print(
@@ -104,6 +130,8 @@ def handle_message(update, context):
         user_exist = db_users.search(query.user == username)
         if len(user_exist) == 0:
             db_users.insert({"user": username, "chat_id": chat_id})
+
+        db_limits.insert({"user": username})
 
 
 if __name__ == "__main__":

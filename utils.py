@@ -45,7 +45,6 @@ def get_top_posts(
     :param lookback_posts:
     :return: success status and reason if failed
     """
-    context.bot.send_message(chat_id=chat_id, text=messages["loading"])
     try:
         username = re.findall(
             r"(?:(?:http|https):\/\/)?(?:www.)?(?:instagram.com|instagr.am)\/([A-Za-z0-9-_.]+)",
@@ -118,5 +117,21 @@ def get_top_posts(
         context.bot.send_message(chat_id=chat_id, text=messages["error"])
         result = False
         traceback = str(e)
+
+    return result, traceback
+
+
+def send_limit_message(context: CallbackContext, chat_id: int, messages: dict) -> tuple:
+    """
+    Send error message about unsupported platform
+    :param context: telegram context
+    :param chat_id: chat id with user
+    :param messages: dict with templates of messages
+    :param platform: platform name
+    :return: fail status and reason
+    """
+    context.bot.send_message(chat_id=chat_id, text=messages[f"limit_message"])
+    result = False
+    traceback = "Limit is exceeded"
 
     return result, traceback
