@@ -56,7 +56,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 query = Query()
 db_users = TinyDB(db_users_path)
-db_limits = TinyDB(db_users_limits_path)
 messages = config["messages"]
 messages_limit = config["messages_limit"]
 
@@ -87,9 +86,14 @@ def error(update, context):
 def handle_message(update, context):
 
     if update.message:
+
+        db_limits = TinyDB(db_users_limits_path)
+
         username = update.message.from_user.name
         chat_id = update.message.chat.id
         profile_url = update.message.text
+
+        db_limits.insert({"user": username})
 
         count_messages = len(db_limits.search(query.user == username))
 
@@ -130,8 +134,6 @@ def handle_message(update, context):
         user_exist = db_users.search(query.user == username)
         if len(user_exist) == 0:
             db_users.insert({"user": username, "chat_id": chat_id})
-
-        db_limits.insert({"user": username})
 
 
 if __name__ == "__main__":
