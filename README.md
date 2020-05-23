@@ -28,10 +28,16 @@ git clone https://github.com/lbulygin/telegram-top-posts-bot
 ```
 python3 /home/{YOUR_USERNAME}/telegram-top-posts-bot/main.py
 ``` 
+4. Add daily scheduled task for purging messages limits:
+```
+rm -rf /home/{YOUR_USERNAME}/telegram-top-posts/db_users_limits.json
+```
 
 ## Database of users and mailing
 
 This bot saves usernames and their chat_id to *db_users.json* for sending messages.
+
+Users have messages limits in config.yml (messages_limit parameter). Limits are stored in  *db_users_limits.json*.
 
 You can send a message to all your users with this command:
 ```
