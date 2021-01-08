@@ -1,18 +1,10 @@
-import instaloader
+import re
+
+from instaloader import Instaloader
 from instaloader import Profile
 import pandas as pd
-import re
 from tabulate import tabulate
 from telegram.ext import CallbackContext
-
-L = instaloader.Instaloader(
-    sleep=True,
-    download_geotags=False,
-    filename_pattern="{shortcode}",
-    quiet=False,
-    download_video_thumbnails=False,
-    download_comments=False,
-)
 
 
 def thousands_sep(x: str) -> str:
@@ -25,6 +17,7 @@ def thousands_sep(x: str) -> str:
 
 
 def get_top_posts(
+    L: Instaloader,
     context: CallbackContext,
     chat_id: int,
     messages: dict,

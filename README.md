@@ -43,3 +43,6 @@ You can send a message to all your users with this command:
 ```
 python3 mailing_users.py --message "YOUR MESSAGE"
 ```
+
+## Instagram Authorization 
+Same as there: https://github.com/lbulygin/telegram-saver-bot

@@ -3,6 +3,7 @@ import argparse
 import logging
 import time
 
+import instaloader
 import yaml
 from chatbase import Message
 from telegram.ext import (
@@ -59,6 +60,18 @@ db_users = TinyDB(db_users_path)
 messages = config["messages"]
 messages_limit = config["messages_limit"]
 
+L = instaloader.Instaloader(
+    sleep=True,
+    download_geotags=False,
+    filename_pattern="{shortcode}",
+    quiet=False,
+    download_video_thumbnails=False,
+    download_comments=False,
+)
+
+if config["authorization"]:
+    L.load_session_from_file(config["login"])
+
 
 def main():
     updater = Updater(config["telegram_token"], use_context=True)
@@ -103,6 +116,7 @@ def handle_message(update, context):
                 text=messages["loading"].format(count_messages, messages_limit),
             )
             result, traceback = get_top_posts(
+                L,
                 context,
                 chat_id,
                 messages,

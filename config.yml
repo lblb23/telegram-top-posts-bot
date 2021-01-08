@@ -13,3 +13,7 @@ messages:
 
 top_n: 10 # how many top posts to display
 lookback_posts: 100 # Get top posts from last N posts
+
+# Authorization
+authorization: False
+login: <value>
