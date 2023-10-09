@@ -1,8 +1,6 @@
 # Telegram bot for getting top posts from Instagram  
 Telegram bot for get top N posts and video by likes and viewsfrom instagram account
 
-[Implementation](https://t.me/top_insta_posts_bot)
-
 ## Getting Started
 
 1. Create own telegram bot. Manual: https://core.telegram.org/bots
